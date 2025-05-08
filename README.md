@@ -23,3 +23,13 @@ To run the Python script, use:
 - `main.py`: Main program execution.
 
 
+## Environment Configuration
+
+To set up environment variables, follow these steps:
+
+1. Select the `.env` file in the project root directory.
+2. Add your variables to the `.env` file in the following format:
+
+   ```env
+   API_KEY=your_api_key_here
+   DATABASE_URL=your_database_url_here
