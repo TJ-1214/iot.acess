@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import os
 import json
 
+import random
 
 load_dotenv()
 # --- Inject fake hardware modules if not running on a real Raspberry Pi ---
@@ -42,6 +43,9 @@ if not platform.machine().startswith("arm"):
 else:
     from mfrc522 import SimpleMFRC522
 
+import RPi.GPIO as GPIO
+
+
 
 mqtt_client = mqtt.Client(protocol=MQTTProtocolVersion.MQTTv5)
 
@@ -49,8 +53,22 @@ def on_connect(client, userdata, flags, rc, properties):
     client.subscribe(os.getenv('BROKER_RFID_STATUS'))
 
 def on_message(client, userdata, msg):
-    print(f"Message received on {msg.topic}: {msg.payload.decode()}")
+   
+    print(msg.payload.decode())
+    data = json.loads(msg.payload.decode())
 
+
+    if bool(data["status"]) : 
+         GPIO.output(solenoid, GPIO.HIGH)
+         
+    else:
+        GPIO.output(solenoid, GPIO.LOW)
+    
+
+
+solenoid = 1 #mocking the wire connection 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(solenoid, GPIO.OUT)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 mqtt_client.connect(os.getenv('BROKER_ADDRESS'))
