@@ -7,7 +7,8 @@ from mfrc522 import SimpleMFRC522
 from dotenv import load_dotenv
 import os
 import json
-
+#uncomment all necessary requirements
+#import RPi.GPIO as GPIO
 #import here all the dependencies of rpie such as GPIO, and etc..
 
 
@@ -17,18 +18,18 @@ import json
 def on_connect(client, userdata, flags, rc, properties):
     client.subscribe(os.getenv('BROKER_RFID_STATUS'))
 
+
+#uncomment the GPIO when testing.
 def on_message(client, userdata, msg):
-   ''' data = json.loads(msg)
+   ''' data = json.loads(msg.payload.decode())
 
-    if data['status'] : 
+    if bool(data["status"]) : 
+         GPIO.output(solenoid, GPIO.HIGH)
+         
+    else:
+        GPIO.output(solenoid, GPIO.LOW)
+  '''
 
-        #this function for receiving msg
-        #insert the workflow of opening the door lock if success
-    
-    
-    '''
-    pass
-  
 
 
 
@@ -60,7 +61,9 @@ def rfid_loop():
 if __main__ == "__main__":
 
     load_dotenv()
-
+    #solenoid = 1  #modified this based on wiring 
+    #GPIO.setmode(GPIO.BOARD)
+    #GPIO.setup(solenoid, GPIO.OUT)
 
     # Start the RFID reader in a non-blocking thread
     threading.Thread(target=rfid_loop, daemon=True).start()
