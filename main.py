@@ -21,19 +21,33 @@ def on_connect(client, userdata, flags, rc, properties):
 
 #uncomment the GPIO when testing.
 def on_message(client, userdata, msg):
-   ''' data = json.loads(msg.payload.decode())
+    '''
+   try:
+        data = json.loads(msg.payload.decode())
+        if bool(data["status"]) : 
+            GPIO.output(solenoid, GPIO.HIGH)
+            
+        else:
+            GPIO.output(solenoid, GPIO.LOW)
 
-    if bool(data["status"]) : 
-         GPIO.output(solenoid, GPIO.HIGH)
-         
-    else:
-        GPIO.output(solenoid, GPIO.LOW)
-  '''
+    except json.JSONDecodeError as e:
+        print(f"JSON Decode Error: {e}. Payload was: {msg.payload}")
+    except KeyError as e:
+        print(f"Missing expected key in message: {e}. Payload was: {msg.payload}")
+    except Exception as e:
+        print(f"Unexpected error handling message: {e}. Payload was: {msg.payload}")
+'''
 
-
-
-
-
+def on_disconnect(client, userdata, rc, properties):
+    print("Disconnected from broker. Trying to reconnect...")
+    while True:
+        try:
+            client.reconnect()
+            print("Reconnected successfully.")
+            break
+        except Exception as e:
+            print(f"Reconnect failed: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
 # --- Callback when RFID is detected ---
 def on_rfid_detected(tag_id):
     payload = {
@@ -71,6 +85,7 @@ if __main__ == "__main__":
     mqtt_client = mqtt.Client(protocol=MQTTProtocolVersion.MQTTv5)
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
+    mqtt_client.on_disconnect = on_disconnect
     mqtt_client.connect(os.getenv('BROKER_ADDRESS'), int(os.getenv("BROKER_PORT")))
     mqtt_client.loop_start()  # Start network loop in the background
 
