@@ -71,7 +71,7 @@ if __main__ == "__main__":
     mqtt_client = mqtt.Client(protocol=MQTTProtocolVersion.MQTTv5)
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
-    mqtt_client.connect(os.getenv('BROKER_ADDRESS'))
+    mqtt_client.connect(os.getenv('BROKER_ADDRESS'), int(os.getenv("BROKER_PORT")))
     mqtt_client.loop_start()  # Start network loop in the background
 
 

@@ -71,7 +71,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(solenoid, GPIO.OUT)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
-mqtt_client.connect(os.getenv('BROKER_ADDRESS'))
+mqtt_client.connect(os.getenv('BROKER_ADDRESS'), int(os.getenv("BROKER_PORT")))
 mqtt_client.loop_start()  # Start network loop in the background
 
 # --- Callback when RFID is detected ---
