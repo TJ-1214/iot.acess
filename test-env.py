@@ -46,6 +46,8 @@ if __name__ == "__main__":
 
 
     mqtt_client = mqtt.Client(protocol=MQTTProtocolVersion.MQTTv5)
+    mqtt_client.username_pw_set(os.getenv("BROKER_USERNAME"), os.getenv("BROKER_PASSWORD"))
+    mqtt_client.tls_set(ca_certs='certificate/emqxsl-ca.crt')
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
     mqtt_client.on_disconnect = on_disconnect
