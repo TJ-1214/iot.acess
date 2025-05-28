@@ -27,7 +27,7 @@ def on_message(client, userdata, msg):
             if data["type"]=="FP":
                 if bool(data["response"]):
                     GPIO.output(solenoid_pin,GPIO.HIGH) #DOOR LOCKED
-                elif not bool(data["response"])
+                elif not bool(data["response"]):
                     GPIO.output(solenoid_pin,GPIO.LOW) #DOOR UNLOCKED
 
     except json.JSONDecodeError as e:
